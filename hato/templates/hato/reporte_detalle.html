@@ -1,0 +1,21 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Reporte {{ reporte.id }}{% endblock %}
+{% block contenido %}
+<h1>Reporte N.º {{ reporte.id }} · {{ reporte.get_tipo_display }}</h1>
+<div class="acciones">
+  <a class="btn" href="{% url 'reporte_pdf' reporte.pk %}" target="_blank">Ver / descargar PDF</a>
+  <a class="btn sec" href="{% url 'reportes' %}">Volver</a>
+</div>
+<div class="tarjeta">
+  <dl class="datos">
+    <dt>Fecha</dt><dd>{{ reporte.fecha|date:"d/m/Y" }}</dd>
+    <dt>Lugar</dt><dd>{{ reporte.lugar }}</dd>
+    <dt>Descripción</dt><dd>{{ reporte.descripcion|default:"—" }}</dd>
+  </dl>
+</div>
+<h2>Animales incluidos</h2>
+<div class="tabla-scroll"><table>
+  <tr><th>Código</th><th>Alias</th><th>Finca</th></tr>
+  {% for a in animales %}<tr><td><a href="{% url 'animal_detalle' a.pk %}">{{ a.codigo }}</a></td><td>{{ a.alias|default:"—" }}</td><td>{{ a.finca.nombre }}</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

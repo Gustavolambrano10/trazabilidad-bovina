@@ -1,0 +1,27 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+<h1>Hola, {{ user.first_name|default:user.username }}</h1>
+<div class="resumen">
+  <div class="dato"><strong>{{ total_fincas }}</strong>Fincas</div>
+  <div class="dato"><strong>{{ total_animales }}</strong>Animales</div>
+  <div class="dato"><strong>{{ activos }}</strong>Activos</div>
+  <div class="dato"><strong>{{ novedades }}</strong>Con novedad</div>
+</div>
+<div class="acciones">
+  <a class="btn" href="{% url 'animal_nuevo' %}">Registrar animal</a>
+  <a class="btn sec" href="{% url 'finca_nueva' %}">Nueva finca</a>
+  <a class="btn sec" href="{% url 'reporte_nuevo' %}">Reportar pérdida o hurto</a>
+</div>
+<h2>Últimos animales registrados</h2>
+{% if recientes %}
+<div class="tabla-scroll"><table>
+  <tr><th>Código</th><th>Alias</th><th>Finca</th><th>Estado</th></tr>
+  {% for a in recientes %}
+  <tr><td><a href="{% url 'animal_detalle' a.pk %}">{{ a.codigo }}</a></td><td>{{ a.alias|default:"—" }}</td><td>{{ a.finca.nombre }}</td><td><span class="etiqueta {{ a.estado }}">{{ a.get_estado_display }}</span></td></tr>
+  {% endfor %}
+</table></div>
+{% else %}
+<p class="vacio">Todavía no hay animales. Empiece registrando un propietario, luego una finca y después sus animales.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "hato/base.html" %}
+{% block titulo %}{{ animal.codigo }}{% endblock %}
+{% block contenido %}
+<h1>{{ animal.codigo }} {% if animal.alias %}· {{ animal.alias }}{% endif %}</h1>
+<div class="acciones">
+  <a class="btn" href="{% url 'animal_editar' animal.pk %}">Editar datos</a>
+  <a class="btn sec" href="{% url 'animales' %}">Volver al listado</a>
+</div>
+<div class="detalle">
+  <div class="tarjeta">
+    {% if animal.foto %}<img class="foto" src="{{ animal.foto.url }}" alt="Foto del animal {{ animal.codigo }}">
+    {% else %}<p class="vacio">Sin foto</p>{% endif %}
+  </div>
+  <div class="tarjeta">
+    <dl class="datos">
+      <dt>Estado</dt><dd><span class="etiqueta {{ animal.estado }}">{{ animal.get_estado_display }}</span></dd>
+      <dt>Chapeta oficial</dt><dd>{{ animal.chapeta_oficial|default:"—" }}</dd>
+      <dt>Sexo</dt><dd>{{ animal.get_sexo_display }}</dd>
+      <dt>Raza</dt><dd>{{ animal.raza|default:"—" }}</dd>
+      <dt>Nacimiento</dt><dd>{{ animal.fecha_nacimiento|date:"d/m/Y"|default:"—" }}</dd>
+      <dt>Hierro</dt><dd>{{ animal.hierro|default:"—" }}</dd>
+      <dt>Señales</dt><dd>{{ animal.senales_particulares|default:"—" }}</dd>
+      <dt>Finca</dt><dd>{{ animal.finca.nombre }} ({{ animal.finca.vereda }})</dd>
+      <dt>Propietario</dt><dd>{{ animal.finca.propietario.nombre }}</dd>
+    </dl>
+  </div>
+</div>
+
+<div class="tarjeta">
+  <h2>Cambiar estado</h2>
+  <form method="post" action="{% url 'animal_estado' animal.pk %}">{% csrf_token %}
+    {{ estado_form.as_p }}
+    <button class="btn" type="submit">Actualizar estado</button>
+  </form>
+</div>
+
+<div class="tarjeta">
+  <h2>Agregar evento al historial</h2>
+  <form method="post" action="{% url 'animal_evento' animal.pk %}">{% csrf_token %}
+    {{ evento_form.as_p }}
+    <button class="btn" type="submit">Agregar evento</button>
+  </form>
+</div>
+
+<h2>Historial</h2>
+{% if eventos %}
+<div class="tabla-scroll"><table>
+  <tr><th>Fecha</th><th>Evento</th><th>Observación</th></tr>
+  {% for e in eventos %}<tr><td>{{ e.fecha|date:"d/m/Y" }}</td><td>{{ e.get_tipo_display }}</td><td>{{ e.observacion|default:"—" }}</td></tr>{% endfor %}
+</table></div>
+{% else %}<p class="vacio">Sin eventos.</p>{% endif %}
+{% endblock %}

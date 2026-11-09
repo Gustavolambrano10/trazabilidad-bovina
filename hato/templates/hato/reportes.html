@@ -1,0 +1,15 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Reportes{% endblock %}
+{% block contenido %}
+<h1>Reportes de pérdida o hurto</h1>
+<div class="acciones"><a class="btn" href="{% url 'reporte_nuevo' %}">Nuevo reporte</a></div>
+{% if reportes %}
+<div class="tabla-scroll"><table>
+  <tr><th>N.º</th><th>Tipo</th><th>Fecha</th><th>Lugar</th><th>Animales</th><th></th></tr>
+  {% for r in reportes %}
+  <tr><td>{{ r.id }}</td><td>{{ r.get_tipo_display }}</td><td>{{ r.fecha|date:"d/m/Y" }}</td><td>{{ r.lugar }}</td><td>{{ r.animales.count }}</td>
+      <td><a href="{% url 'reporte_detalle' r.pk %}">Ver</a> · <a href="{% url 'reporte_pdf' r.pk %}" target="_blank">PDF</a></td></tr>
+  {% endfor %}
+</table></div>
+{% else %}<p class="vacio">Todavía no hay reportes.</p>{% endif %}
+{% endblock %}

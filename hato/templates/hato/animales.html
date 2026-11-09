@@ -1,0 +1,39 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Animales{% endblock %}
+{% block contenido %}
+<h1>Animales</h1>
+<div class="acciones">
+  <a class="btn" href="{% url 'animal_nuevo' %}">Registrar animal</a>
+  <a class="btn sec" href="{% url 'animales_csv' %}">Exportar a CSV</a>
+</div>
+<form class="tarjeta filtros" method="get">
+  <div><label for="q">Buscar</label><input type="text" id="q" name="q" value="{{ q }}" placeholder="Código, chapeta, alias, hierro…"></div>
+  <div><label for="estado">Estado</label>
+    <select id="estado" name="estado"><option value="">Todos</option>
+      {% for v, n in estados %}<option value="{{ v }}" {% if v == estado %}selected{% endif %}>{{ n }}</option>{% endfor %}
+    </select></div>
+  <div><label for="sexo">Sexo</label>
+    <select id="sexo" name="sexo"><option value="">Todos</option>
+      <option value="H" {% if sexo == "H" %}selected{% endif %}>Hembra</option>
+      <option value="M" {% if sexo == "M" %}selected{% endif %}>Macho</option></select></div>
+  <div><label for="finca">Finca</label>
+    <select id="finca" name="finca"><option value="">Todas</option>
+      {% for f in fincas %}<option value="{{ f.pk }}" {% if f.pk|stringformat:"s" == finca_sel %}selected{% endif %}>{{ f.nombre }}</option>{% endfor %}
+    </select></div>
+  <div><button class="btn" type="submit">Buscar</button></div>
+</form>
+
+{% if pagina.object_list %}
+<div class="tabla-scroll"><table>
+  <tr><th>Código</th><th>Alias</th><th>Sexo</th><th>Raza</th><th>Finca</th><th>Estado</th></tr>
+  {% for a in pagina %}
+  <tr><td><a href="{% url 'animal_detalle' a.pk %}">{{ a.codigo }}</a></td><td>{{ a.alias|default:"—" }}</td><td>{{ a.get_sexo_display }}</td><td>{{ a.raza|default:"—" }}</td><td>{{ a.finca.nombre }}</td><td><span class="etiqueta {{ a.estado }}">{{ a.get_estado_display }}</span></td></tr>
+  {% endfor %}
+</table></div>
+<div class="paginacion">
+  {% if pagina.has_previous %}<a href="?{{ parametros }}&page={{ pagina.previous_page_number }}">← Anterior</a>{% endif %}
+  <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+  {% if pagina.has_next %}<a href="?{{ parametros }}&page={{ pagina.next_page_number }}">Siguiente →</a>{% endif %}
+</div>
+{% else %}<p class="vacio">No se encontraron animales con esos criterios.</p>{% endif %}
+{% endblock %}

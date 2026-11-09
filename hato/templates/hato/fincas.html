@@ -1,0 +1,16 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Fincas{% endblock %}
+{% block contenido %}
+<h1>Fincas</h1>
+<div class="acciones"><a class="btn" href="{% url 'finca_nueva' %}">Nueva finca</a></div>
+{% if fincas %}
+<div class="tabla-scroll"><table>
+  <tr><th>Finca</th><th>Vereda</th><th>Propietario</th><th>Área (ha)</th><th>Animales</th><th></th></tr>
+  {% for f in fincas %}
+  <tr><td>{{ f.nombre }}</td><td>{{ f.vereda }}</td><td>{{ f.propietario.nombre }}</td><td>{{ f.area_hectareas|default:"—" }}</td>
+      <td><a href="{% url 'animales' %}?finca={{ f.pk }}">{{ f.total }}</a></td>
+      <td><a href="{% url 'finca_resumen' f.pk %}">Resumen</a> · <a href="{% url 'finca_editar' f.pk %}">Editar</a></td></tr>
+  {% endfor %}
+</table></div>
+{% else %}<p class="vacio">No hay fincas registradas.</p>{% endif %}
+{% endblock %}

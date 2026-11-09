@@ -1,0 +1,28 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Resumen de {{ finca.nombre }}{% endblock %}
+{% block contenido %}
+<h1>Resumen de inventario · {{ finca.nombre }}</h1>
+<div class="acciones">
+  <a class="btn" href="{% url 'animales' %}?finca={{ finca.pk }}">Ver animales de esta finca</a>
+  <a class="btn sec" href="{% url 'fincas' %}">Volver a fincas</a>
+</div>
+<div class="tarjeta">
+  <dl class="datos">
+    <dt>Vereda</dt><dd>{{ finca.vereda }}</dd>
+    <dt>Propietario</dt><dd>{{ finca.propietario.nombre }}</dd>
+    <dt>Área</dt><dd>{{ finca.area_hectareas|default:"—" }} ha</dd>
+  </dl>
+</div>
+<div class="resumen">
+  <div class="dato"><strong id="total">{{ total }}</strong>Total de animales</div>
+  <div class="dato"><strong>{{ hembras }}</strong>Hembras</div>
+  <div class="dato"><strong>{{ machos }}</strong>Machos</div>
+</div>
+<h2>Por estado</h2>
+<div class="tabla-scroll"><table>
+  <tr><th>Estado</th><th>Cantidad</th></tr>
+  {% for nombre, cantidad, valor in por_estado %}
+  <tr><td><span class="etiqueta {{ valor }}">{{ nombre }}</span></td><td>{{ cantidad }}</td></tr>
+  {% endfor %}
+</table></div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "hato/base.html" %}
+{% block titulo %}Ingresar{% endblock %}
+{% block contenido %}
+<div class="centro tarjeta">
+  <h1>Ingresar</h1>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Entrar</button>
+  </form>
+  <p>¿No tiene cuenta? <a href="{% url 'registro' %}">Regístrese aquí</a>.</p>
+</div>
+{% endblock %}
