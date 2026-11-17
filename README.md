@@ -1,6 +1,6 @@
 # Prototipo web de trazabilidad del ganado bovino — San Pedro, Sucre
 
-Prototipo funcional (TRL 5) desarrollado en **Python + Django** como parte del proyecto de grado
+Prototipo funcional (TRL 5 en el escenario simulado de la Fase 4: desplegado en línea con HTTPS y 39 pruebas automáticas aprobadas; la validación con productores reales queda como trabajo siguiente) desarrollado en **Python + Django** como parte del proyecto de grado
 de Ingeniería de Sistemas (UNAD). Apoya la prevención del abigeato permitiendo a los productores
 registrar su ganado, consultar su historial y generar un reporte en PDF cuando hay una pérdida o un hurto.
 
@@ -22,7 +22,7 @@ Cada productor **solo ve y modifica sus propios datos**.
 
 ## Tecnologías
 
-Python 3.11+, Django 5.x, SQLite (desarrollo) o PostgreSQL (producción), ReportLab (PDF),
+Python 3.11+, Django 5.2 o superior (probado también con 6.1), SQLite (desarrollo) o PostgreSQL (producción), ReportLab (PDF),
 Pillow (fotos), HTML/CSS responsive, Git y GitHub.
 
 ## Cómo ejecutarlo en su computador
@@ -64,9 +64,9 @@ Pillow (fotos), HTML/CSS responsive, Git y GitHub.
 7. Abrir en el navegador http://127.0.0.1:8000/ e ingresar con:
 
    - Productor: usuario `demo`, contraseña `Demo12345!`
-   - Administrador: usuario `admin_demo`, contraseña `Admin12345!` (entra también a `/admin/`)
+   - Administrador: el comando `cargar_demo` crea también un usuario de demostración con permisos de administración (entra a `/admin/`); su contraseña no se publica. Para crear su propio administrador use `python manage.py createsuperuser`.
 
-   Estos usuarios son solo para pruebas locales. No ejecute `cargar_demo` en un servidor real.
+   Estos usuarios son solo para pruebas. No ejecute `cargar_demo` en un servidor real.
 
 Para crear otro administrador: `python manage.py createsuperuser`.
 
@@ -132,19 +132,26 @@ git remote add origin https://github.com/SU_USUARIO/trazabilidad-bovina.git
 git push -u origin main
 ```
 
-Luego, en GitHub: *Settings → Collaborators* (o *Manage access*) y dar acceso de lectura al tutor.
+El repositorio es público (solo lectura para quien no es autor). Si fuera privado, en GitHub: *Settings → Collaborators* para dar acceso de lectura al tutor.
 
-## Publicarlo en internet (opcional)
+## Sitio en línea
 
-Se incluyen `build.sh` y `Procfile` pensados para un hosting tipo Render. Variables de entorno:
-`PRODUCCION=1`, `DJANGO_SECRET_KEY`, `ALLOWED_HOSTS` (su dominio) y `CSRF_TRUSTED_ORIGINS` (`https://su-dominio`).
+El prototipo está publicado en PythonAnywhere con HTTPS: https://gustavolambrano.pythonanywhere.com/
+Para probarlo con datos ficticios: usuario `demo`, contraseña `Demo12345!`.
+
+El historial de cambios está en [CHANGELOG.md](CHANGELOG.md) y la versión liberada es la v1.0.0 (sección Releases).
+
+## Publicarlo en internet
+
+El despliegue realizado en esta fase fue en PythonAnywhere (cuenta gratuita), con base de datos SQLite, y se verificó con HTTPS.
+Variables de entorno: `PRODUCCION=1`, `DJANGO_SECRET_KEY`, `ALLOWED_HOSTS` (su dominio) y `CSRF_TRUSTED_ORIGINS` (`https://su-dominio`).
 Para PostgreSQL basta con `DATABASE_URL` (o `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`).
-Con `PRODUCCION=1` se activan HTTPS, cookies seguras y HSTS. Comando de construcción: `./build.sh`; de inicio: `gunicorn config.wsgi`.
+Con `PRODUCCION=1` se activan HTTPS, cookies seguras y HSTS.
+Se incluyen también `build.sh` y `Procfile`, pensados para hostings tipo Render (comando de construcción `./build.sh`; de inicio `gunicorn config.wsgi`); ese camino no se probó.
 La revisión `python manage.py check --deploy` solo deja dos avisos opcionales (HSTS para subdominios y precarga).
 
-Ojo: en los hosting gratuitos el disco es temporal, por lo que las fotos subidas pueden perderse al reiniciar.
-Para el piloto conviene un almacenamiento persistente o repetir la carga de fotos.
-El despliegue no se ha probado en un hosting real; hay que verificarlo al publicarlo.
+Ojo: en el plan gratuito de PythonAnywhere la aplicación debe renovarse cada cierto tiempo desde la pestaña Web, y en hostings gratuitos
+el disco puede ser temporal, por lo que las fotos subidas podrían perderse. Para un piloto real conviene un almacenamiento persistente.
 
 ## Alcance y limitaciones
 
